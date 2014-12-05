@@ -1,0 +1,87 @@
+div.tip-user{
+    visibility:hidden;
+    position:absolute;
+    top:0;
+    left:0;
+}
+div.tip-user table.tip-table, div.tip-user table.tip-table td{
+    margin:0;
+    font-family:inherit;
+    font-size:inherit;
+    font-weight:inherit;
+    font-style:inherit;
+    font-variant:inherit;
+    vertical-align:middle;
+}
+div.tip-user td.tip-bg-image span{
+    display:block;
+    font:1px/1px sans-serif;
+    height:10px;
+    width:10px;
+    overflow:hidden;
+}
+div.tip-user td.tip-right{
+    background-position:100% 0;
+}
+div.tip-user td.tip-bottom{
+    background-position:100% 100%;
+}
+div.tip-user td.tip-left{
+    background-position:0 100%;
+}
+div.tip-user div.tip-inner{
+    background-position:-10px -10px;
+}
+div.tip-user div.tip-arrow{
+    visibility:hidden;
+    position:absolute;
+    overflow:hidden;
+    font:1px/1px sans-serif;
+}
+.fancybox-margin{
+    margin-right:0px;
+}
+div.tip-com{
+    visibility:hidden;
+    position:absolute;
+    top:0;
+    left:0;
+}
+div.tip-com table.tip-table, div.tip-com table.tip-table td{
+    margin:0;
+    font-family:inherit;
+    font-size:inherit;
+    font-weight:inherit;
+    font-style:inherit;
+    font-variant:inherit;
+    vertical-align:middle;
+}
+div.tip-com td.tip-bg-image span{
+    display:block;
+    font:1px/1px sans-serif;
+    height:10px;
+    width:10px;
+    overflow:hidden;
+}
+div.tip-com td.tip-right{
+    background-position:100% 0;
+}
+div.tip-com td.tip-bottom{
+    background-position:100% 100%;
+}
+div.tip-com td.tip-left{
+    background-position:0 100%;
+}
+div.tip-com div.tip-inner{
+    background-position:-10px -10px;
+}
+div.tip-com div.tip-arrow{
+    visibility:hidden;
+    position:absolute;
+    overflow:hidden;
+    font:1px/1px sans-serif;
+}
+.fancybox-margin{
+    margin-right:0px;
+}
+

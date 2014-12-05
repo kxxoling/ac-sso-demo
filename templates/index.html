@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SSO Example</title>
+    <link rel="stylesheet" href="http://42py.com/css/TECH2IPO/init.css">
+    <link rel="stylesheet" href="http://42py.com/css/TECH2IPO/index.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <script src="http://42py.com/js/TECH2IPO/const.js"></script>
+    <script src="http://42py.com/js/_lib/jquery-1.11.1.min.js"></script>
+    <script src="http://42py.com/js/_lib/cookie.js"></script>
+    <script src="http://42py.com/js/_lib/jquery-ui.js"></script>
+    <script src="http://42py.com/js/_lib/jquery.zh_cn.js"></script>
+    <script src="http://42py.com/js/_lib/async.js"></script>
+    <script src="http://42py.com/js/_lib/avalon.js"></script>
+    <script src="http://42py.com/js/TECH2IPO/_util/head.js"></script>
+    <script src="http://42py.com/js/require.js/config.js"></script>
+    <script src="http://42py.com/js/_lib/director.js"></script>
+    <script src="http://42py.com/js/_lib/z42.js"></script>
+    <script src="http://42py.com/js/_lib/slide.js"></script>
+    <script src="http://42py.com/js/_lib/jquery.poshytip.js"></script>
+    <script src="http://42py.com/js/_lib/jquery.fancybox.js"></script>
+    <script src="http://42py.com/js/_lib/jquery_ext.js"></script>
+    <script src="http://42py.com/js/_lib/reply.js"></script>
+    <script src="http://42py.com/js/_lib/trim.js"></script>
+</head>
+<body>
+    {% if get_flashed_messages() %}
+        {% for msg in get_flashed_messages() %}
+            <h1>{{ msg }}</h1>
+        {% endfor %}
+    {% else %}
+    <script>
+        CONST.SSO = {
+            ID: {{ g.app_id  }},
+            QINIU: "//dn-acsso.qbox.me",
+            URL: "//{{ g.sso_host }}"
+        }
+        $$('SSO/user.login')
+    </script>
+    {% endif %}
+</body>
+</html>
