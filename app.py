@@ -23,7 +23,6 @@ def sso_logined(func):
         g.sso = client_sign.sso
         g.user_info_id = client_sign.user_info_id
         g.sso_user_id, g.sso_session = client_sign.session_decode()
-        print 'sso_session: ', g.sso_session
         g.session = client_sign.session
         return func(*args, **kwargs)
     return wrapper
