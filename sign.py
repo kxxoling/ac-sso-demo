@@ -28,7 +28,7 @@ class ClientSign(object):
 
     @classmethod
     def time_verify(self, s):
-        timestamp, sign = s.split("|", 2)
+        timestamp, = s.split("|", 2)
         timestamp = int(timestamp)
         server_time = time.time()
         if abs(timestamp - server_time) > 300:
@@ -36,9 +36,10 @@ class ClientSign(object):
 
     @property
     def signed_url(self, sso_session, callback, o={}, path='user.sync'):
-        o['sso_id'] = self.sso_user_id
-        print sign_callback_url(callback, o=o, path=path)
-        return sign_callback_url(callback, o=o, path=path)
+        session = self.session_decode()
+        if session:
+            o['sso_id'] = session[0]
+        return sign_callback_url(sso_session, callback, o=o, path=path)
 
     def session_decode(self):
         """session 由 SSO 服务器设置，形如 9912642.pPPskgBpjJxyYXFk%22%2C
@@ -50,8 +51,9 @@ class ClientSign(object):
         return int(sso_user_id), urlsafe_b64decode(str(sso_session))
 
 
-def sign_callback_url(sso_session, callback, o={}, path='/rpc/user.sync'):
+def sign_callback_url(sso_session, callback, o=None, path='/rpc/user.sync'):
     """ 将参数编码在 URL 中，向 SSO 服务器发起请求"""
+    o = o or {}
     if type(o) is basestring:
         o = loads(o)
     o['app_id'] = APP_ID
@@ -70,11 +72,9 @@ def _encode_url(secret, o):
     o = dumps(o)
     timestamp = int(time.time())
 
-    print _sign(secret, o, timestamp)
     sign = urlsafe_b64encode(
         _sign(secret, o, timestamp)
     ).rstrip("=")
-    print sign
     s = "%d|%s" % (timestamp, sign)
 
     return urlencode(dict(
