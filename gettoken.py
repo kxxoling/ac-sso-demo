@@ -1,5 +1,5 @@
 import requests
-from sso import HOST, APP_NAME, SSO_HOST, SYNC_URL, LOGIN_URL
+from config import HOST, APP_NAME, SSO_HOST, SYNC_URL, LOGIN_URL
 
 SSO_REGISTER_URL = 'http://sso.tech2ipo.com/rpc/app.new'
 
