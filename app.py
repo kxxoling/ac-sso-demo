@@ -5,7 +5,8 @@ from functools import wraps
 from flask import Flask, request, g, render_template, flash, redirect
 
 from config import TOKEN, APP_ID, SSO_HOST
-from sign import ClientSign, sign_callback_url
+from sign import ClientSign, sign_callback_url,\
+    TimeNotMatchError, SSOServerError, InvalidSign
 
 
 app = Flask(__name__)
@@ -18,6 +19,10 @@ def sso_logined(func):
         o = request.args.get('o', '')
         s = request.args.get('s', '')
         client_sign = ClientSign(o, s)
+        try:
+            client_sign.verify()
+        except (TimeNotMatchError, SSOServerError, InvalidSign) as e:
+            abort(401, e)
 
         g.token = TOKEN
         g.sso = client_sign.sso
@@ -44,8 +49,6 @@ def sso_sync():
 @sso_logined
 def sso_login():
     flash(u'SSO 用户 %s 已登录' % g.sso_user_id)
-    flash(u'SSO 用户 %d 的个人资料版本号为 %d'
-          % (g.sso_user_id, g.sso.get('user_info_id')))
 
     callback = request.args.get('callback', '')
 
@@ -71,6 +74,8 @@ def js_file(file_name):
 
 
 def is_user_info_newest(user_id, user_info_id):
+    flash(u'SSO 用户 %d 的个人资料版本号为 %d'
+          % (user_id, user_info_id))
     return False
 
 

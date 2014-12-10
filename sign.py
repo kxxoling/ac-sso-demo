@@ -15,31 +15,31 @@ class ClientSign(object):
         if not s:
             raise SSOServerError
         self.o = o
-        self.s = s
         self.sso = loads(o)
         self.user_info_id = self.sso.get('user_info_id')
         self.session = self.sso.get('session')
+        self.sso_user_id, self.sso_session = self.session.split('.', 2)
+        timestamp, self.sign = s.split("|", 2)
+        self.timestamp = int(timestamp)
 
-    @classmethod
-    def verify(cls, sign, secret, o, time):
-        sign = urlsafe_b64decode(str(sign) + "==")
-        if sign == cls.sign(secret, o, time):
-            return True
+    def verify(self):
+        self._time_verify()
+        signed_url = urlsafe_b64decode(str(self.sign) + "==")
+        if signed_url != _sign(TOKEN, self.o, self.timestamp):
+            raise InvalidSign
 
-    @classmethod
-    def time_verify(self, s):
-        timestamp, = s.split("|", 2)
-        timestamp = int(timestamp)
+    def _time_verify(self):
         server_time = time.time()
-        if abs(timestamp - server_time) > 300:
+        if abs(self.timestamp - server_time) > 300:
             raise TimeNotMatchError
 
     @property
-    def signed_url(self, sso_session, callback, o={}, path='user.sync'):
-        session = self.session_decode()
-        if session:
-            o['sso_id'] = session[0]
-        return sign_callback_url(sso_session, callback, o=o, path=path)
+    def signed_url(self, callback, o=None, path='/rpc/user.sync'):
+        o = o or {}
+        session_pair = self.session_decode()
+        if session_pair:
+            o['sso_id'] = session_pair[0]
+        return sign_callback_url(self.sso_session, callback, o=o, path=path)
 
     def session_decode(self):
         """session 由 SSO 服务器设置，形如 9912642.pPPskgBpjJxyYXFk%22%2C
@@ -47,8 +47,7 @@ class ClientSign(object):
         sso_user_id 即当前登录用户对应的 SSO 服务器 User_id
         sso_session 用于向 SSO 服务器发起请求
         """
-        sso_user_id, sso_session = self.session.split('.', 2)
-        return int(sso_user_id), urlsafe_b64decode(str(sso_session))
+        return int(self.sso_user_id), urlsafe_b64decode(str(self.sso_session))
 
 
 def sign_callback_url(sso_session, callback, o=None, path='/rpc/user.sync'):
