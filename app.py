@@ -2,7 +2,7 @@
 import os
 from functools import wraps
 
-from flask import Flask, request, g, render_template, flash, redirect
+from flask import Flask, request, g, render_template, flash, redirect, abort
 
 from config import TOKEN, APP_ID, SSO_HOST
 from sign import ClientSign, sign_callback_url,\
