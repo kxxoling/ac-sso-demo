@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
 from functools import wraps
 
 from flask import Flask, request, g, render_template, flash, redirect, abort
