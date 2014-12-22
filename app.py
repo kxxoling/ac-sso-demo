@@ -65,14 +65,6 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/js/SSO/<file_name>')
-def js_file(file_name):
-    with open(os.path.join(os.getcwd(),
-                           'static/js/SSO', file_name)) as f:
-        fl = f.read()
-    return fl
-
-
 def is_user_info_newest(user_id, user_info_id):
     flash(u'SSO 用户 %d 的个人资料版本号为 %d'
           % (user_id, user_info_id))

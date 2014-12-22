@@ -32,7 +32,7 @@
     return $("#SSO_user input:enabled:first").focus().select();
   };
 
-  prefix = "//" + CONST.HOST + "/";
+  prefix = location.protocol + ("//" + CONST.HOST + "/");
 
   jump = function(v, action) {
     return v[action] = function() {
@@ -114,6 +114,7 @@
 
   $$user = $import("" + CONST.SSO.URL + "/rpc/user");
 
+  $.SSO = $.SSO || {}
   $.SSO.user = {
     "new": function(url) {
       return render('new_by_mail', url);
