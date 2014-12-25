@@ -101,5 +101,6 @@ class InvalidSign(Exception):
     def __repr__(self):
         return "Sign Not Invalid"
 
+
 if __name__ == '__main__':
     pass
