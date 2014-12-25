@@ -25,10 +25,7 @@ def sso_logined(func):
             abort(401, e)
 
         g.token = TOKEN
-        g.sso = client_sign.sso
-        g.user_info_id = client_sign.user_info_id
-        g.sso_user_id, g.sso_session = client_sign.session_decode()
-        g.session = client_sign.session
+        g.client_sign = client_sign
         return func(*args, **kwargs)
     return wrapper
 
@@ -48,13 +45,16 @@ def sso_sync():
 @app.route('/sso_login')
 @sso_logined
 def sso_login():
-    flash(u'SSO 用户 %s 已登录' % g.sso_user_id)
+    flash(u'SSO 用户 %s 已登录' % g.client_sign.sso_user_id)
 
     callback = request.args.get('callback', '')
 
-    if not is_user_info_newest(g.sso_user_id, g.user_info_id):
+    if not is_user_info_newest(g.client_sign.sso_user_id,
+                               g.client_sign.user_info_id):
         return redirect(sign_callback_url(
-            g.sso_session, callback, dict(sso_id=g.sso_user_id, app_id=APP_ID)
+            g.client_sign.sso_session,
+            callback,
+            dict(sso_id=g.client_sign.sso_user_id, app_id=APP_ID)
         ))
 
     return callback + '({})'
