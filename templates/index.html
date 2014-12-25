@@ -6,23 +6,24 @@
     <link rel="stylesheet" href="http://42py.com/css/TECH2IPO/init.css">
     <link rel="stylesheet" href="http://42py.com/css/TECH2IPO/index.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-    <script src="http://42py.com/js/TECH2IPO/const.js"></script>
-    <script src="http://42py.com/js/_lib/jquery-1.11.1.min.js"></script>
-    <script src="http://42py.com/js/_lib/cookie.js"></script>
-    <script src="http://42py.com/js/_lib/jquery-ui.js"></script>
-    <script src="http://42py.com/js/_lib/jquery.zh_cn.js"></script>
-    <script src="http://42py.com/js/_lib/async.js"></script>
-    <script src="http://42py.com/js/_lib/avalon.js"></script>
-    <script src="http://42py.com/js/TECH2IPO/_util/head.js"></script>
-    <script src="http://42py.com/js/require.js/config.js"></script>
-    <script src="http://42py.com/js/_lib/director.js"></script>
-    <script src="http://42py.com/js/_lib/z42.js"></script>
-    <script src="http://42py.com/js/_lib/slide.js"></script>
-    <script src="http://42py.com/js/_lib/jquery.poshytip.js"></script>
-    <script src="http://42py.com/js/_lib/jquery.fancybox.js"></script>
-    <script src="http://42py.com/js/_lib/jquery_ext.js"></script>
-    <script src="http://42py.com/js/_lib/reply.js"></script>
-    <script src="http://42py.com/js/_lib/trim.js"></script>
+    <script src="{{ url_for('static', filename='js/const.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/cookie.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery-ui.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.zh_cn.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/async.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/avalon.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/head.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/config.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/director.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/z42.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/slide.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.poshytip.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.fancybox.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery_ext.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/reply.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/trim.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/user.js') }}"></script>
 </head>
 <body>
     {% if get_flashed_messages() %}
@@ -36,7 +37,7 @@
             QINIU: "//dn-acsso.qbox.me",
             URL: "//{{ g.sso_host }}"
         }
-        $$('SSO/user.login')
+        $.SSO.user.login()
     </script>
     {% endif %}
 </body>

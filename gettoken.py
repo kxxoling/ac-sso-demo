@@ -1,7 +1,7 @@
 import requests
 from config import HOST, APP_NAME, SSO_HOST, SYNC_URL, LOGIN_URL
 
-SSO_REGISTER_URL = 'http://sso.tech2ipo.com/rpc/app.new'
+SSO_REGISTER_URL = 'http://sso.ac-index.com/rpc/app.new'
 
 
 def get_token():

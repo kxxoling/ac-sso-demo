@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
 from functools import wraps
 
 from flask import Flask, request, g, render_template, flash, redirect, abort
@@ -63,14 +62,6 @@ def sso_login():
 @app.route('/')
 def index():
     return render_template('index.html')
-
-
-@app.route('/js/SSO/<file_name>')
-def js_file(file_name):
-    with open(os.path.join(os.getcwd(),
-                           'static/js/SSO', file_name)) as f:
-        fl = f.read()
-    return fl
 
 
 def is_user_info_newest(user_id, user_info_id):
