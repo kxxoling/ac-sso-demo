@@ -16,9 +16,11 @@ class ClientSign(object):
             raise SSOServerError
         self.o = o
         self.sso = loads(o)
-        self.user_info_id = self.sso.get('user_info_id')
+        user_info_id = self.sso.get('user_info_id')
+        self.user_info_id = user_info_id and int(user_info_id) or 0
         self.session = self.sso.get('session')
-        self.sso_user_id, self.sso_session = self.session.split('.', 2)
+        sso_user_id, self.sso_session = self.session.split('.', 2)
+        self.sso_user_id = sso_user_id and int(sso_user_id) or 0
         timestamp, self.sign = s.split("|", 2)
         self.timestamp = int(timestamp)
 
