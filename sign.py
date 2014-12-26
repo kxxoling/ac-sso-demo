@@ -16,15 +16,22 @@ class ClientSign(object):
             raise SSOServerError
         self.o = o
         self.sso = loads(o)
+
         user_info_id = self.sso.get('user_info_id')
         self.user_info_id = user_info_id and int(user_info_id) or 0
+
         self.session = self.sso.get('session')
-        sso_user_id, self.sso_session = self.session.split('.', 2)
+
+        sso_user_id, self._sso_session = self.session.split('.', 2)
         self.sso_user_id = sso_user_id and int(sso_user_id) or 0
+
         timestamp, self.sign = s.split("|", 2)
         self.timestamp = int(timestamp)
 
-    def verify(self):
+        self.sso_session = self.session_decode()
+        self._verify()
+
+    def _verify(self):
         self._time_verify()
         signed_url = urlsafe_b64decode(str(self.sign) + "==")
         if signed_url != _sign(TOKEN, self.o, self.timestamp):
@@ -35,12 +42,10 @@ class ClientSign(object):
         if abs(self.timestamp - server_time) > 300:
             raise TimeNotMatchError
 
-    @property
     def signed_url(self, callback, o=None, path='/rpc/user.sync'):
         o = o or {}
-        session_pair = self.session_decode()
-        if session_pair:
-            o['sso_id'] = session_pair[0]
+        o['sso_id'] = self.sso_user_id
+        o['app_id'] = APP_ID
         return sign_callback_url(self.sso_session, callback, o=o, path=path)
 
     def session_decode(self):
@@ -49,7 +54,7 @@ class ClientSign(object):
         sso_user_id 即当前登录用户对应的 SSO 服务器 User_id
         sso_session 用于向 SSO 服务器发起请求
         """
-        return int(self.sso_user_id), urlsafe_b64decode(str(self.sso_session))
+        return urlsafe_b64decode(str(self._sso_session))
 
 
 def sign_callback_url(sso_session, callback, o=None, path='/rpc/user.sync'):
