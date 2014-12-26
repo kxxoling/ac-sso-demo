@@ -14,7 +14,11 @@ class ClientSign(object):
             raise SSOServerError
         if not s:
             raise SSOServerError
-        self.o = o
+        timestamp, self.sign = s.split("|", 2)
+        self.timestamp = int(timestamp)
+
+        self._verify(o)
+
         self.sso = loads(o)
 
         user_info_id = self.sso.get('user_info_id')
@@ -22,42 +26,40 @@ class ClientSign(object):
 
         self.session = self.sso.get('session')
 
-        sso_user_id, self._sso_session = self.session.split('.', 2)
+        sso_user_id, sso_session = self.session.split('.', 2)
         self.sso_user_id = sso_user_id and int(sso_user_id) or 0
+        self.sso_session = _session_decode(sso_session)
 
-        timestamp, self.sign = s.split("|", 2)
-        self.timestamp = int(timestamp)
-
-        self.sso_session = self.session_decode()
-        self._verify()
-
-    def _verify(self):
+    def _verify(self, o):
         self._time_verify()
         signed_url = urlsafe_b64decode(str(self.sign) + "==")
-        if signed_url != _sign(TOKEN, self.o, self.timestamp):
+        if signed_url != _sign(TOKEN, o, self.timestamp):
             raise InvalidSign
 
     def _time_verify(self):
-        server_time = time.time()
-        if abs(self.timestamp - server_time) > 300:
+        """防止超时操作"""
+        app_time = time.time()
+        if abs(self.timestamp - app_time) > 300:
             raise TimeNotMatchError
 
     def signed_url(self, callback, o=None, path='/rpc/user.sync'):
+        """将相关信息、回调地址和服务器用户信息同步地址加密"""
         o = o or {}
         o['sso_id'] = self.sso_user_id
         o['app_id'] = APP_ID
-        return sign_callback_url(self.sso_session, callback, o=o, path=path)
-
-    def session_decode(self):
-        """session 由 SSO 服务器设置，形如 9912642.pPPskgBpjJxyYXFk%22%2C
-        该方法从 session 中取出 sso_user_id 和 sso_session，
-        sso_user_id 即当前登录用户对应的 SSO 服务器 User_id
-        sso_session 用于向 SSO 服务器发起请求
-        """
-        return urlsafe_b64decode(str(self._sso_session))
+        return _sign_callback_url(self.sso_session, callback, o=o, path=path)
 
 
-def sign_callback_url(sso_session, callback, o=None, path='/rpc/user.sync'):
+def _session_decode(sso_session):
+    """session 由 SSO 服务器设置，形如 9912642.pPPskgBpjJxyYXFk%22%2C
+    该方法从 session 中取出 sso_user_id 和 sso_session，
+    sso_user_id 即当前登录用户对应的 SSO 服务器 user_id
+    sso_session 用于向 SSO 服务器发起请求
+    """
+    return urlsafe_b64decode(str(sso_session))
+
+
+def _sign_callback_url(sso_session, callback, o=None, path='/rpc/user.sync'):
     """ 将参数编码在 URL 中，向 SSO 服务器发起请求"""
     o = o or {}
     if type(o) is basestring:

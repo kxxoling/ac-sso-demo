@@ -3,7 +3,7 @@ from functools import wraps
 
 from flask import Flask, request, g, render_template, flash, redirect, abort
 
-from config import TOKEN, APP_ID, SSO_HOST
+from config import APP_ID, SSO_HOST
 from sign import ClientSign, TimeNotMatchError, SSOServerError, InvalidSign
 
 
@@ -21,7 +21,6 @@ def sso_logined(func):
         except (TimeNotMatchError, SSOServerError, InvalidSign) as e:
             abort(401, e)
 
-        g.token = TOKEN
         g.client_sign = client_sign
         return func(*args, **kwargs)
     return wrapper
@@ -59,13 +58,15 @@ def index():
 
 
 def is_user_info_newest(user_id, user_info_id):
+    """根据用户信息版本号判断数据库中用户信息是否需要更新"""
     flash(u'SSO 用户 %d 的个人资料版本号为 %d'
           % (user_id, user_info_id))
     return False
 
 
 def get_user_id_by_sso_user_id(sso_user_id):
-    return int(sso_user_id)
+    """需要自己实现一个根据 SSO 服务器上用户 id 的函数"""
+    return sso_user_id
 
 
 if __name__ == '__main__':
