@@ -111,5 +111,13 @@ class InvalidSign(Exception):
         return "Sign Not Invalid"
 
 
+def jsonp(callback_func, rsp=None):
+    """返回JSONP格式的结果"""
+    if rsp is None:
+        rsp = {}
+    if callback_func:
+        return "%s(%s)" % (callback_func, rsp)
+
+
 if __name__ == '__main__':
     pass

@@ -4,7 +4,7 @@ from functools import wraps
 from flask import Flask, request, g, render_template, flash, redirect, abort
 
 from config import APP_ID, SSO_HOST
-from sign import ClientSign, TimeNotMatchError, SSOServerError, InvalidSign
+from sign import jsonp, ClientSign, TimeNotMatchError, SSOServerError, InvalidSign
 
 
 app = Flask(__name__)
@@ -35,21 +35,21 @@ def before_request():
 @app.route('/sso_sync')
 def sso_sync():
     flash(u'数据同步完成：%s' % request.args.get('o'))
-    return request.args.get('callback', '') + '({})'
+    callback_func = request.args.get('callback', '')
+    return jsonp(callback_func)
 
 
 @app.route('/sso_login')
 @sso_logined
 def sso_login():
     flash(u'SSO 用户 %s 已登录' % g.client_sign.sso_user_id)
-
-    callback_url = request.args.get('callback', '')
+    callback_func = request.args.get('callback', '')
 
     if not is_user_info_newest(g.client_sign.sso_user_id,
                                g.client_sign.user_info_id):
-        return redirect(g.client_sign.signed_url(callback_url))
+        return redirect(g.client_sign.signed_url(callback_func))
 
-    return callback_url + '({})'
+    return jsonp(callback_func)
 
 
 @app.route('/')
