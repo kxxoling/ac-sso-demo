@@ -71,4 +71,4 @@ def get_user_id_by_sso_user_id(sso_user_id):
 
 if __name__ == '__main__':
     app.secret_key = "You won't guess this"
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
